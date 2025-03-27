@@ -1,0 +1,38 @@
+<!-- HTML FILE -->
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livechat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mycss.css') }}"/>
+</head>
+<body>
+    <nav class="navigation">
+        <h1>Livechat</h1>
+        <div class="menu">
+            <a href="{{ url_for('index') }}">Introduktion</a>
+            <a href="{{ url_for('livechatt') }}">Livechat</a>
+            <a href="{{ url_for('om_oss') }}">Om oss</a>
+        </div>
+        <a href="{{ url_for('logout') }}" class="navigation-button">Logga ut</a>
+    </nav>
+
+    <section class="kropp-upp">
+        <h1>Välkommen till vår plattform</h1>
+        <p>Starta en livechat och få snabba svar. Diskutera det ämne du önskar.</p>
+    </section>
+
+    <section class="kropp-mitten">
+        <h2>Erbjudande</h2>
+        <p>Vår plattform gör det enkelt att kommunicera, både med andra användare och med vår smarta chatbot. Få svar på dina frågor direkt, dygnet runt!</p>
+    </section>
+
+    <section class="kropp-nere">
+      <h2>Kategorier</h2>
+      <p>Skapa egna ämnen att prata om. Det kan handla om teknik, vardagsliv eller något helt unikt. Här sätter du tonen för samtalet och bjuder in andra att delta!</p>
+    </section>
+</body>
+
+</html>
