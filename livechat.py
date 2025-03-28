@@ -129,7 +129,7 @@ def inloggning():
             session["user_id"] = user["id"]
             session["email"] = user["email"]
             session.permanent = True
-            app.permanent_session_lifetime = timedelta(days=1)
+            app.permanent_session_lifetime = timedelta(days=30)
             return redirect(url_for("index"))
 
         flash("Fel e-postadress eller lösenord!", "error")
