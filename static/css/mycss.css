@@ -56,9 +56,9 @@ body {
 }
 
 .kropp-upp {
+  background: linear-gradient(to right, #8a8490, #2575fc);
   text-align: center;
   padding: 5rem 8%;
-  background: linear-gradient(to right, #8a8490, #2575fc);
   color: white;
 }
 
@@ -73,12 +73,6 @@ body {
   font-weight: 300;
   max-width: 800px;
   margin: 0 auto 2rem auto;
-}
-
-.image-section img {
-  width: 100vw;
-  height: 400px;
-  object-fit: cover;
 }
 
 .kropp-mitten {
@@ -118,7 +112,6 @@ body {
   margin: 0 auto 2rem auto;
 }
 
-/*------------------------ Inloggning ---------------------------------------*/
 .Inlog_kroppen {
   font-family: Arial, sans-serif;
   background: #f0f0f0;
@@ -266,7 +259,6 @@ h3 {
   margin-left: 10px;
 }
 
-/* Flash Messages */
 .flash-messages {
   position: fixed;
   top: 20px;
@@ -290,7 +282,6 @@ h3 {
   background-color: #dc3545;
 }
 
-/* Rooms tabell */
 .Active-Rooms {
   font-family: Arial, sans-serif;
   max-width: 800px;
@@ -302,7 +293,6 @@ h3 {
 }
 
 
-/* Rooms tabell */
 .Active-Rooms h1 {
   text-align: center;
   color: #333;
@@ -342,7 +332,6 @@ h3 {
   margin-top: 20px;
 }
 
-/* Registrering */
 
 .Signup-kroppen{
   font-family: Arial, sans-serif;
@@ -408,7 +397,7 @@ h3 {
   text-decoration: underline;
 }
 
-/* Inloggning */
+
 .Inloggning-kropp{
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;

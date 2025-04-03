@@ -16,12 +16,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 socketio = SocketIO(app,async_mode="eventlet")
 
-app.config["SECRET_KEY"] = "THISISACODE"
+app.config["SECRET_KEY"] = "THISISAroom_kod"
 
 #socketio = SocketIO(app)
 
 #Vi hämtar klienten för Huggingface för att prata med AI-boten
-bot_client = InferenceClient(
+Ai_klient = InferenceClient(
     provider="novita",
     api_key="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"
 )
@@ -29,16 +29,14 @@ bot_client = InferenceClient(
 
 DATABASE = os.path.join(BASE_DIR, "users.databas")
 
-#Här vi connectar till databas
-def Databas_connection():
+def hamta_databas():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
 
-#Här vi skapar användare om de inte finns
 def databas_inneholl():
     with app.app_context():
-        databas = Databas_connection()
+        databas = hamta_databas()
         databas.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,24 +65,22 @@ def Visa_historik():
 rooms = {}
 filerooms = os.path.join(BASE_DIR, "rooms.json")
 
-#Den funktionen för att spara rum för att visa de senare
 def Spara_room():
     with open(filerooms, "w") as f:
         json.dump(rooms, f)
 
-#För att genererara slumpmässig kod för rum chatten
 def Skapa_kod(length):
-    code = "".join(random.choice(ascii_uppercase) for _ in range(length))
-    if code not in rooms:
-        return code
+    room_kod = "".join(random.choice(ascii_uppercase) for _ in range(length))
+    if room_kod not in rooms:
+        return room_kod
 
-#Den funktioner används för  kommunicera med AI chatt
-def Bot_connection(room, user_message=None):
+# Här vi hanterar kommunikationen mellan användare och AI-bot
+def connect_AI(room, user_message=None):
     if rooms[room]["members"] == 1:
         if user_message:
             messages = [{"role": "user", "content": user_message}]
             try:
-                completion = bot_client.chat.completions.create(
+                completion = Ai_klient.chat.completions.create(
                     model="deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
                     messages=messages,
                     max_tokens=500,
@@ -110,7 +106,6 @@ def visa_user():
     else:
         g.user = None
 
-#Hanterar inloggning sida
 @app.route("/", methods=["GET", "POST"])
 def inloggning():
     if request.method == "POST":
@@ -121,7 +116,7 @@ def inloggning():
             flash("E-postadress och lösenord krävs!", "error")
             return redirect(url_for("inloggning"))
 
-        databas = Databas_connection()
+        databas = hamta_databas()
         user = databas.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
         databas.close()
 
@@ -135,7 +130,6 @@ def inloggning():
         flash("Fel e-postadress eller lösenord!", "error")
     return render_template("Inloggning.html")
 
-#Hanterar Om_oss sida
 @app.route('/om_oss')
 def om_oss():
     if "user_id" not in session:
@@ -143,7 +137,6 @@ def om_oss():
         return redirect(url_for("inloggning"))
     return render_template('om_oss.html')
 
-#Hanterar Index/Introduktion sida
 @app.route("/index")
 def index():
     print("Session data:", session)
@@ -153,7 +146,6 @@ def index():
     return render_template("Index.html")
 
 
-#Hanterar signup sida 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -165,7 +157,7 @@ def signup():
         hashed_password = generate_password_hash(password)
 
         try:
-            databas = Databas_connection()
+            databas = hamta_databas()
             databas.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, hashed_password))
             databas.commit()
             databas.close()
@@ -182,9 +174,8 @@ def logout():
     flash("Du har loggat ut.", "success")
     return redirect(url_for("inloggning"))
 
-#Det här för om man lämnar in chat room
 @socketio.on("disconnect")
-def handle_disconnect():
+def disconnect_anvandare():
     room = session.get("room")
     name = session.get("name")
     
@@ -200,7 +191,7 @@ def handle_disconnect():
     socketio.emit("rooms_updated", broadcast=True)
 
 
-#Hanterar livechatt html för att skapa eller ansluta till ett rum
+#Det här är för livechatt html för att skapa eller ansluta till ett rum
 @app.route("/livechatt", methods=["POST", "GET"])
 def livechatt():
     if "user_id" not in session:
@@ -209,17 +200,17 @@ def livechatt():
 
     if request.method == "POST":
         name = request.form.get("name")
-        code = request.form.get("code")
+        room_kod = request.form.get("room_kod")
         subject = request.form.get("subject")
         join_action = 'join' in request.form  
         create_action = 'create' in request.form  
 
         if not name.strip():
-            return render_template("livechatt.html", error="Please enter your name!", code=code, name=name, rooms=rooms)
+            return render_template("livechatt.html", error="Please enter your name!", room_kod = room_kod, name = name, rooms = rooms)
 
         if create_action:
             if not subject.strip():
-                return render_template("livechatt.html", error="Please enter a Subject!", code=code, name=name, subject=subject, rooms=rooms)
+                return render_template("livechatt.html", error="Please enter a Subject!", room_kod = room_kod, name = name, subject = subject, rooms = rooms)
             
             room = Skapa_kod(4)
             rooms[room] = {"members": 0, "messages": [], "subject": subject, "creator": name}
@@ -230,14 +221,14 @@ def livechatt():
             return redirect(url_for("room"))
 
         elif join_action:
-            if not code:
-                return render_template("livechatt.html", error="Please enter a room Code", code=code, name=name, rooms=rooms)
-            elif code not in rooms:
-                return render_template("livechatt.html", error="Room does not exist", code=code, name=name, rooms=rooms)
+            if not room_kod:
+                return render_template("livechatt.html", error="Please enter a room room_kod", room_kod = room_kod, name = name, rooms=rooms)
+            elif room_kod not in rooms:
+                return render_template("livechatt.html", error="Room does not exist", room_kod=room_kod, name=name, rooms=rooms)
             
-            session["room"] = code
+            session["room"] = room_kod
             session["name"] = name
-            session["subject"] = rooms[code]["subject"]
+            session["subject"] = rooms[room_kod]["subject"]
             return redirect(url_for("room"))
 
     return render_template("livechatt.html", rooms=rooms)
@@ -250,7 +241,7 @@ def room():
     subject = session.get("subject")
     if room not in rooms:
         return redirect(url_for("livechatt"))
-    return render_template("room.html", code=room, messages=rooms[room]["messages"], name=name, subject=subject)
+    return render_template("room.html", room_kod=room, messages=rooms[room]["messages"], name=name, subject=subject)
 
 #Sköter meddelande som sker
 @socketio.on("message")
@@ -262,7 +253,7 @@ def message(data):
         content = {"name": name, "subject": subject, "message": data["data"]}
         send(content, to=room)
         rooms[room]["messages"].append(content)
-        Bot_connection(room, user_message=data["data"])
+        connect_AI(room, user_message=data["data"])
 
 #Jag har skapat det här funktionen för användaren ska ansluta till rätt rum
 @socketio.on("connect")
@@ -273,7 +264,7 @@ def connect(auth):
         join_room(room)
         send({"name": name, "message": "has entered the room"}, to=room)
         rooms[room]["members"] += 1
-        Bot_connection(room)
+        connect_AI(room)
 
 #Här vi startar hela appen/webbsida med eventlet som asynkront körsystem
 if __name__ == "__main__":
