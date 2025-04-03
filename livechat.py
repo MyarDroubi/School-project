@@ -202,16 +202,16 @@ def livechatt():
         name = request.form.get("name")
         room_kod = request.form.get("code")
         subject = request.form.get("subject")
-        join_action = 'join' in request.form  
-        create_action = 'create' in request.form  
+        join = 'join' in request.form  
+        create = 'create' in request.form  
 
         if not name.strip():
             return render_template("livechatt.html", error="Please enter your name!", room_kod = room_kod, name = name, rooms = rooms)
 
-        if create_action:
-            if not subject.strip():
+        if create and not subject.strip():
                 return render_template("livechatt.html", error="Please enter a Subject!", room_kod = room_kod, name = name, subject = subject, rooms = rooms)
-            
+        
+        if create:
             room = Skapa_kod(4)
             rooms[room] = {"members": 0, "messages": [], "subject": subject, "creator": name}
             Spara_room()
@@ -220,7 +220,7 @@ def livechatt():
             session["subject"] = subject
             return redirect(url_for("room"))
 
-        elif join_action:
+        elif join:
             if not room_kod:
                 return render_template("livechatt.html", error="Please enter a room room_kod", room_kod = room_kod, name = name, rooms=rooms)
             elif room_kod not in rooms:
