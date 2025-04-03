@@ -94,6 +94,10 @@ def connect_AI(room, user_message=None):
         send({"name": "Bot", "message": final_answer}, to=room)
         rooms[room]["messages"].append({"name": "Bot", "message": final_answer})
 
+"""
+def Ta_bort_rum(room):
+    pass
+"""
 
 @app.before_request
 def visa_user():
@@ -103,6 +107,11 @@ def visa_user():
     else:
         g.user = None
 
+"""
+#För att vissa användarens information
+def Visa_profil(user_id):
+    pass
+"""
 @app.route("/", methods=["GET", "POST"])
 def inloggning():
     if request.method == "POST":
