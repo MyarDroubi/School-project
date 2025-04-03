@@ -112,6 +112,7 @@ def visa_user():
 def Visa_profil(user_id):
     pass
 """
+
 @app.route("/", methods=["GET", "POST"])
 def inloggning():
     if request.method == "POST":
