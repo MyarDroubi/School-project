@@ -94,11 +94,6 @@ def connect_AI(room, user_message=None):
         send({"name": "Bot", "message": final_answer}, to=room)
         rooms[room]["messages"].append({"name": "Bot", "message": final_answer})
 
-"""
-def Ta_bort_rum(room):
-    pass
-"""
-
 @app.before_request
 def visa_user():
     user_id = session.get('user_id')
