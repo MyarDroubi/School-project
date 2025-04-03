@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 socketio = SocketIO(app,async_mode="eventlet")
 
-app.config["SECRET_KEY"] = "THISISAroom_kod"
+app.config["SECRET_KEY"] = "THISISACODE"
 
 #socketio = SocketIO(app)
 
@@ -200,7 +200,7 @@ def livechatt():
 
     if request.method == "POST":
         name = request.form.get("name")
-        room_kod = request.form.get("room_kod")
+        room_kod = request.form.get("code")
         subject = request.form.get("subject")
         join_action = 'join' in request.form  
         create_action = 'create' in request.form  
@@ -233,7 +233,7 @@ def livechatt():
 
     return render_template("livechatt.html", rooms=rooms)
 
-#room.html delen för att chatta med AI eller person
+#Vi har skapatroom.html delen för att chatta med AI eller person
 @app.route("/room")
 def room():
     room = session.get("room") 
