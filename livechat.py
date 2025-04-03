@@ -202,16 +202,16 @@ def livechatt():
         name = request.form.get("name")
         room_kod = request.form.get("room_kod")
         subject = request.form.get("subject")
-        join_action = 'join' in request.form  
-        create_action = 'create' in request.form  
+        join = 'join' in request.form  
+        create = 'create' in request.form  
 
         if not name.strip():
             return render_template("livechatt.html", error="Please enter your name!", room_kod = room_kod, name = name, rooms = rooms)
 
-        if create_action:
-            if not subject.strip():
+        if create and not subject.strip():
                 return render_template("livechatt.html", error="Please enter a Subject!", room_kod = room_kod, name = name, subject = subject, rooms = rooms)
             
+        if create:
             room = Skapa_kod(4)
             rooms[room] = {"members": 0, "messages": [], "subject": subject, "creator": name}
             Spara_room()
@@ -220,7 +220,7 @@ def livechatt():
             session["subject"] = subject
             return redirect(url_for("room"))
 
-        elif join_action:
+        elif join:
             if not room_kod:
                 return render_template("livechatt.html", error="Please enter a room room_kod", room_kod = room_kod, name = name, rooms=rooms)
             elif room_kod not in rooms:
@@ -233,7 +233,6 @@ def livechatt():
 
     return render_template("livechatt.html", rooms=rooms)
 
-#room.html delen för att chatta med AI eller person
 @app.route("/room")
 def room():
     room = session.get("room") 
@@ -243,7 +242,7 @@ def room():
         return redirect(url_for("livechatt"))
     return render_template("room.html", room_kod=room, messages=rooms[room]["messages"], name=name, subject=subject)
 
-#Sköter meddelande som sker
+#Här vi sköter meddelande som vi får från användare via SocketIO
 @socketio.on("message")
 def message(data):
     room = session.get("room")
@@ -255,7 +254,7 @@ def message(data):
         rooms[room]["messages"].append(content)
         connect_AI(room, user_message=data["data"])
 
-#Jag har skapat det här funktionen för användaren ska ansluta till rätt rum
+#Jag har skapat det här funktionen för att ansluta användaren till rum
 @socketio.on("connect")
 def connect(auth):
     room = session.get("room")
