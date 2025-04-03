@@ -11,7 +11,7 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app_fil = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 socketio = SocketIO(app,async_mode="eventlet")
@@ -20,14 +20,14 @@ app.config["SECRET_KEY"] = "THISISACODE"
 
 #socketio = SocketIO(app)
 
-#Vi hämtar klienten för Huggingface för att prata med AI-boten
+#Vi skapar en klient för Huggingface för att prata med AI-boten
 Ai_klient = InferenceClient(
     provider="novita",
     api_key="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"
 )
 
 
-DATABASE = os.path.join(BASE_DIR, "users.databas")
+DATABASE = os.path.join(app_fil, "users.databas")
 
 def hamta_databas():
     conn = sqlite3.connect(DATABASE)
@@ -51,19 +51,17 @@ databas_inneholl()
 
 
 """
-#Spara historik i databas eller js
+#Spara historik i databas och visa
 def Spara_historik():
-    room = session.get("room")
-    name = session.get("name")
+    pass
 
     
-#Funktion som vissas historik för chatt
 def Visa_historik():
     pass
 """
 
 rooms = {}
-filerooms = os.path.join(BASE_DIR, "rooms.json")
+filerooms = os.path.join(app_fil, "rooms.json")
 
 def Spara_room():
     with open(filerooms, "w") as f:
@@ -74,7 +72,7 @@ def Skapa_kod(length):
     if room_kod not in rooms:
         return room_kod
 
-# Här vi hanterar kommunikationen mellan användare och AI-bot
+# Här vi hanterar kommunikationen mellan användare och skickar till AI-bot
 def connect_AI(room, user_message=None):
     if rooms[room]["members"] == 1:
         if user_message:
@@ -243,7 +241,7 @@ def room():
         return redirect(url_for("livechatt"))
     return render_template("room.html", room_kod=room, messages=rooms[room]["messages"], name=name, subject=subject)
 
-#Sköter meddelande som sker
+#tar emot och sköter meddelande i rummet
 @socketio.on("message")
 def message(data):
     room = session.get("room")
