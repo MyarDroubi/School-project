@@ -4,7 +4,6 @@ import random
 import json
 import os
 import eventlet
-import eventlet.wsgi
 from string import ascii_uppercase
 from huggingface_hub import InferenceClient
 import sqlite3
