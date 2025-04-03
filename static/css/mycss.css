@@ -282,7 +282,7 @@ h3 {
   background-color: #dc3545;
 }
 
-.Active-Rooms {
+.Rooms {
   font-family: Arial, sans-serif;
   max-width: 800px;
   margin: 20px auto;
@@ -293,20 +293,20 @@ h3 {
 }
 
 
-.Active-Rooms h1 {
+.Rooms h1 {
   text-align: center;
   color: #333;
   margin-bottom: 20px;
   font-size: 24px;
 }
 
-.Active-Rooms table {
+.Rooms table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
 
-.Active-Rooms th {
+.Rooms th {
   padding: 12px;
   text-align: left;
   font-weight: bold;
@@ -315,17 +315,17 @@ h3 {
   border-bottom: 2px solid #ddd;
 }
 
-.Active-Rooms td {
+.Rooms td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
   color: #555;
 }
 
-.Active-Rooms tbody tr:hover {
+.Rooms tbody tr:hover {
   background-color: #f1f1f1;
 }
 
-.Active-Rooms p {
+.Rooms p {
   text-align: center;
   color: #777;
   font-style: italic;
